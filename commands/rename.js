@@ -5,7 +5,7 @@ module.exports = {
         .setName('rename')
         .setDescription('Select a member and change their name!')
         .addUserOption(option => option.setName('target').setDescription('The member to rename').setRequired(true))
-        .addStringOption(option => option.setName('name').setDescription('Their new name').setRequired(true))
+        .addStringOption(option => option.setName('name').setDescription('Their new server nickname').setRequired(true))
     ,
     async execute(interaction) {
         const member = interaction.options.getMember('target');

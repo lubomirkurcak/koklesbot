@@ -1,7 +1,8 @@
+require('dotenv').config()
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
-const { token } = require('./config.json');
+const { badWords } = require(process.env.CONFIG);
 
 const client = new Client({
     intents: [
@@ -24,6 +25,12 @@ const client = new Client({
         GatewayIntentBits.GuildScheduledEvents,
     ]
 });
+
+client.on("error", (e) => console.error(e));
+client.on("warn", (e) => console.warn(e));
+client.on("debug", (e) => console.info(e));
+
+client.badWords = badWords;
 
 const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
@@ -48,4 +55,4 @@ for (const file of commandFiles) {
     client.commands.set(command.data.name, command);
 }
 
-client.login(token);
+client.login(process.env.TOKEN);
