@@ -1,7 +1,0 @@
-radim - coinflip (kolko flipov, kolko stran ma "kocka")
-anketa
-rocket league / lol rank ledger
-fotku
-move all to a voice channel
-randomly split members into two teams
-add quote - periodically display saved quotes

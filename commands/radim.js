@@ -3,7 +3,7 @@ const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, ButtonStyle } = re
 module.exports = {
     data: new SlashCommandBuilder()
         .setName('radim')
-        .setDescription('Decision making assistant'),
+        .setDescription('Decision making assistant.'),
     async execute(interaction) {
         if (!interaction.isChatInputCommand()) return;
 

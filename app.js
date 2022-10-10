@@ -2,7 +2,7 @@ require('dotenv').config()
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
-const { badWords } = require(process.env.CONFIG);
+const { steamIds, badWords } = require(process.env.CONFIG);
 
 const client = new Client({
     intents: [
@@ -30,7 +30,9 @@ client.on("error", (e) => console.error(e));
 client.on("warn", (e) => console.warn(e));
 client.on("debug", (e) => console.info(e));
 
+client.steamIds = steamIds;
 client.badWords = badWords;
+client.automessageGuilds = new Map();
 
 const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));

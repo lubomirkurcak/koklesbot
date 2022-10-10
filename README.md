@@ -7,8 +7,11 @@ To add this bot to your server [click this!](https://discord.com/oauth2/authoriz
 ### Commands
 | Command | Description |
 | --- | --- |
-| `/rename` | Change a member's nickname |
+| `/automessage` | Show informative messages |
+| `/cs` | Display Counter-Strike stats |
+| `/move` | Move all users to channel |
 | `/radim` | Draw balls from a bag |
+| `/rename` | Change a member's nickname |
 
 ## Roadmap
 ### Rankings

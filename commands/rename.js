@@ -8,9 +8,9 @@ module.exports = {
         .addStringOption(option => option.setName('name').setDescription('Their new server nickname').setRequired(true))
     ,
     async execute(interaction) {
-        const member = interaction.options.getMember('target');
-        const name = interaction.options.getString('name');
         try {
+            const member = interaction.options.getMember('target');
+            const name = interaction.options.getString('name');
             await member.setNickname(name);
             return interaction.reply({ content: `You renamed ${member.user.username}`, ephemeral: true });
         } catch (error) {

@@ -9,8 +9,12 @@
   "author": "mooj",
   "license": "ISC",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.12",
     "discord.js": "^14.5.0",
-    "dotenv": "^16.0.3"
+    "dotenv": "^16.0.3",
+    "jsdom": "^20.0.1",
+    "puppeteer": "^18.2.1",
+    "request": "^2.88.2"
   },
   "devDependencies": {
     "eslint": "^8.25.0"
