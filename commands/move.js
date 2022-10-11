@@ -19,22 +19,18 @@ module.exports = {
             const specificUsers = interaction.options.getString('users');
 
             if (specificUsers) {
-                const matches = specificUsers.match(/<@(\w*)>/g);
-                matches.forEach(match => {
-                    match = match.slice(2, -1);
-                    interaction.guild.members.fetch(match)
+                specificUsers.match(/<@\w+>/g).forEach(match => {
+                    interaction.guild.members.fetch(match.slice(2, -1))
                         .then(member => member.voice.setChannel(targetChannel))
                         .catch(error => console.error(error));
                 });
-                return interaction.reply({ content: `Moved ${matches.length} members.`, ephemeral: true });
             } else {
-                const members = interaction.member.voice.channel.members;
-                members.forEach(member => {
-                    member.voice.setChannel(targetChannel);
-                });
-                return interaction.reply({ content: `Moved ${members.size} members.`, ephemeral: true });
+                Promise.allSettled(interaction.member.voice.channel.members.map(member => member.voice.setChannel(targetChannel)));
             }
 
+            //await interaction.reply({ content: ':heavy_check_mark:', ephemeral: true });
+            await interaction.reply(':heavy_check_mark:');
+            return interaction.deleteReply();
         } catch (error) {
             console.error(error);
             return interaction.reply({ content: 'Command failed. :cry:', ephemeral: true });

@@ -1,18 +1,8 @@
+const { collapseDuplicateCharacters, simplifyString, onlyKeepAlphabetic } = require("../misc/shared");
+
 function hasCurseWords(message, badWords) {
-    const test1 = message
-        .replaceAll(/\s+/g, '')
-        .normalize("NFD").replace(/\p{Diacritic}/gu, "")
-        .replaceAll('0', 'o')
-        .replaceAll('1', 'i')
-        .replaceAll('2', 'z')
-        .replaceAll('3', 'e')
-        .replaceAll('4', 'a')
-        .replaceAll('5', 's')
-        .replaceAll('7', 't')
-        .replaceAll('8', 'b')
-        .toLowerCase();
-    
-    const test2 = test1.replaceAll(/(\w)\1+/g, '$1');
+    const test1 = onlyKeepAlphabetic(simplifyString(message));
+    const test2 = collapseDuplicateCharacters(test1);
 
     if (badWords.some(value => test1.includes(value) || test2.includes(value))) {
         return true;
@@ -23,16 +13,18 @@ function hasCurseWords(message, badWords) {
 
 module.exports = {
     name: 'messageCreate',
-    execute(interaction, client) {
-        if (interaction.author.bot) return;
+    execute(message) {
+        if (message.author.bot) return;
 
-        if (interaction.author.id == "689388928608108588" && Math.random() < .2) {
-            interaction.react("🤡");
+        if (message.author.id == "689388928608108588" && Math.random() < .2) {
+            message.react("🤡");
         }
 
-        if (hasCurseWords(interaction.content, client.badWords)) {
-            interaction.reply("We don't use curse words here! :slight_smile:");
+        if (hasCurseWords(message.content, message.client.badWords)) {
+            message.reply("We don't use curse words here! :slight_smile:");
             // TODO: Strike author and mute them upon 3 violations!
         }
+
+        message.client.messageCreateHooks.forEach(callback => callback(message));
     },
 };

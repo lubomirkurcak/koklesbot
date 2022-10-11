@@ -1,53 +1,44 @@
-function getProphecy() {
-    const map = new Map();
-    map.set(":green_circle:", 50);
-    map.set(":red_circle:", 50);
-    map.set(":clown:", 1);
+const { shuffleInplace } = require("../misc/shared");
 
-    var total = 0;
-    map.forEach(value => total += value);
-    var roll = total * Math.random();
-
-    for (const key of map.keys()) {
-        console.log(`key ${key} roll ${roll} < ${map.get(key)} is ${roll < map.get(key)}`);
-        if (roll < map.get(key)) {
-            return key;
-        }
-        roll -= map.get(key);
-    }
-
-    return map.keys().next().value;
+function getBag() {
+    return [
+        Array(3).fill(':o:'),
+        Array(3).fill(':red_circle:'),
+        Array(1).fill(':cloud_rain:'),
+        Array(1).fill(':trophy:'),
+    ].flat();
 }
 
-function getBigProphecy(count) {
-    const elements = [];
-    for (var i = 0; i < count; i++) {
-        elements.push(getProphecy());
-    }
+function listContents() {
+    return getBag().join(' ');
+}
 
-    return elements.join(' ');
+function drawBalls(count) {
+    const bag = getBag();
+    shuffleInplace(bag);
+    return `Bag contains:\n${listContents()}\nYou drew:\n${bag.slice(0, count).join(' ')}`;
 }
 
 module.exports = {
     name: 'interactionCreate',
-    execute(interaction, client) {
+    execute(interaction) {
         console.log(`${interaction.user.tag} in #${interaction.channel.name} triggered an interaction.`);
 
         if (interaction.isChatInputCommand()) {
-            const command = client.commands.get(interaction.commandName);
+            const command = interaction.client.commands.get(interaction.commandName);
 
             if (!command) return;
 
             command.execute(interaction);
         } else if (interaction.isButton()) {
-            if (interaction.customId == 'radim1') {
-                interaction.update({ content: getBigProphecy(1), components: [] });
-            } else if (interaction.customId == 'radim3') {
-                interaction.update({ content: getBigProphecy(3), components: [] });
-            } else if (interaction.customId == 'radim5') {
-                interaction.update({ content: getBigProphecy(5), components: [] });
-            } else if (interaction.customId == 'radim10') {
-                interaction.update({ content: getBigProphecy(10), components: [] });
+            if (interaction.customId == 'draw1') {
+                interaction.update({ content: drawBalls(1), components: [] });
+            } else if (interaction.customId == 'draw2') {
+                interaction.update({ content: drawBalls(2), components: [] });
+            } else if (interaction.customId == 'draw3') {
+                interaction.update({ content: drawBalls(3), components: [] });
+            } else if (interaction.customId == 'draw4') {
+                interaction.update({ content: drawBalls(4), components: [] });
             }
         } else {
             console.log(`${interaction}`);
