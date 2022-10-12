@@ -1,6 +1,6 @@
 module.exports = {
     unique: function (array) {
-        return [...new Set(array)]
+        return [...new Set(array)];
     },
 
     getRandomElement: function (array) {
@@ -49,11 +49,7 @@ module.exports = {
             .replaceAll('y', 'i');
     },
 
-    onlyKeepAscii: function (string) {
-        return string.replace(/[^\x00-\x7F]/g, '');
-    },
-
     onlyKeepAsciiAlphabetic: function (string) {
         return string.replace(/[^a-zA-Z]/g, '');
     },
-}
+};

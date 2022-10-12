@@ -11,8 +11,8 @@ module.exports = {
             .addChannelTypes(ChannelType.GuildVoice))
         .addStringOption(option => option
             .setName('users')
-            .setDescription('Move only specific @mentioned users'))
-    ,
+            .setDescription('Move only specific @mentioned users')),
+
     async execute(interaction) {
         try {
             const targetChannel = interaction.options.getChannel('channel');

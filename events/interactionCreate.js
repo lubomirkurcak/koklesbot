@@ -6,7 +6,9 @@ module.exports = {
             if (!command) return;
             command.execute(interaction);
         } else if (interaction.isButton()) {
-            const buttonCallback = interaction.client.registeredButtons.get(interaction.customId);
+            const guildResources = interaction.client.getOrCreateGuildResources(interaction.guildId);
+
+            const buttonCallback = guildResources.registeredButtons.get(interaction.customId);
             if (buttonCallback) {
                 buttonCallback(interaction);
             } else {

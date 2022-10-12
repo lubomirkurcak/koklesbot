@@ -1,5 +1,5 @@
-require('dotenv').config()
-const { SlashCommandBuilder, ActionRowBuilder, ButtonBuilder, EmbedBuilder } = require('discord.js');
+require('dotenv').config();
+const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 
 async function getStats(platformUserIdentifier) {
@@ -18,16 +18,16 @@ async function getStats(platformUserIdentifier) {
     result.name = obj.data.platformInfo.platformUserHandle;
     result.avatarUrl = obj.data.platformInfo.avatarUrl;
 
-    ["timePlayed", "matchesPlayed", "wins", "ties", "losses", "mvp",]
+    ['timePlayed', 'matchesPlayed', 'wins', 'ties', 'losses', 'mvp']
         .forEach(value => {
-            const stat = obj.data.segments[0].stats[value]
+            const stat = obj.data.segments[0].stats[value];
             result[value] = { name: stat.displayName, value: stat.value, displayValue: stat.displayValue };
         });
 
     return result;
 }
 
-var lastApiAccess = new Date(-8640000000000000);
+let lastApiAccess = new Date(-8640000000000000);
 
 module.exports = {
     cooldown: 1200000,
@@ -68,8 +68,8 @@ module.exports = {
                     const names = { name: 'Hrac', value: oks.map(value => value.name).join('\n'), inline: true };
                     const time = { name: 'Bojoval', value: oks.map(value => value.timePlayed.displayValue).join('\n'), inline: true };
                     const wins = { name: 'Vyhral', value: oks.map(value => value.wins.displayValue).join('\n'), inline: true };
-                    //const losses = { name: 'Prejebal', value: ok.map(value => value.losses.displayValue).join('\n'), inline: true };
-                    //const mvps = { name: 'MVP', value: ok.map(value => value.mvp.displayValue).join('\n'), inline: true };
+                    // const losses = { name: 'Prejebal', value: ok.map(value => value.losses.displayValue).join('\n'), inline: true };
+                    // const mvps = { name: 'MVP', value: ok.map(value => value.mvp.displayValue).join('\n'), inline: true };
 
                     const embed = new EmbedBuilder()
                         .setTitle('Counter-Strike: Global Statistics')
@@ -80,14 +80,13 @@ module.exports = {
                         .addFields(names)
                         .addFields(time)
                         .addFields(wins)
-                        //.addFields(losses)
-                        //.addFields(mvps)
+                        // .addFields(losses)
+                        // .addFields(mvps)
                         .setTimestamp()
-                        .setFooter({ text: 'kokles industries ©️ all rights reserved', iconURL: 'https://cdn.discordapp.com/avatars/1028334262656700506/82a584fbe99ad2a23bf53b7dd9d933ae' })
+                        .setFooter({ text: 'kokles industries ©️ all rights reserved', iconURL: 'https://cdn.discordapp.com/avatars/1028334262656700506/82a584fbe99ad2a23bf53b7dd9d933ae' });
 
                     return interaction.editReply({ embeds: [embed] });
-                })
-
+                });
         } catch (error) {
             console.error(error);
             return interaction.reply({ content: 'Command failed. :cry:', ephemeral: true });

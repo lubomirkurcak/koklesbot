@@ -36,18 +36,18 @@ module.exports = {
                 { name: 'vpici', value: 'vpici.ogg' },
                 { name: 'wideputin', value: 'wideputin.ogg' },
                 { name: 'wow', value: 'wow.ogg' },
-            )
+            ),
         )
         .addChannelOption(option => option
             .setName('channel')
             .setDescription('The channel to play the sound in.')
-            .addChannelTypes(ChannelType.GuildVoice))
-    ,
+            .addChannelTypes(ChannelType.GuildVoice)),
+
     async execute(interaction) {
         try {
             const channel = interaction.options.getChannel('channel') ?? interaction.member.voice.channel;
             if (!channel) {
-                return interaction.reply({ content: `Join a voice channel or specify target channel to play a sound! :musical_note:`, ephemeral: true });
+                return interaction.reply({ content: 'Join a voice channel or specify target channel to play a sound! :musical_note:', ephemeral: true });
             }
             const audioPlayer = interaction.client.getGuildAudioPlayer(interaction.guildId);
 
@@ -61,7 +61,7 @@ module.exports = {
                     adapterCreator: channel.guild.voiceAdapterCreator,
                 });
 
-                connection.on(VoiceConnectionStatus.Disconnected, async (oldState, newState) => {
+                connection.on(VoiceConnectionStatus.Disconnected, async () => {
                     try {
                         await Promise.race([
                             entersState(connection, VoiceConnectionStatus.Signalling, 5_000),
@@ -70,8 +70,8 @@ module.exports = {
                     } catch (error) {
                         try {
                             connection.destroy();
-                        } catch (error) {
-                            console.log(error);
+                        } catch (error2) {
+                            console.log(error2);
                         }
                     }
                 });

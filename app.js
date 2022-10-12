@@ -1,9 +1,8 @@
-require('dotenv').config()
+require('dotenv').config();
 const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
-const { steamIds, badWords } = require(process.env.CONFIG);
-const { generateDependencyReport, createAudioPlayer, NoSubscriberBehavior, AudioPlayerStatus } = require('@discordjs/voice');
+const { generateDependencyReport, createAudioPlayer, NoSubscriberBehavior } = require('@discordjs/voice');
 console.log(generateDependencyReport());
 
 const client = new Client({
@@ -25,35 +24,40 @@ const client = new Client({
         GatewayIntentBits.DirectMessageTyping,
         GatewayIntentBits.MessageContent,
         GatewayIntentBits.GuildScheduledEvents,
-    ]
+    ],
 });
 
-client.on("error", (e) => console.error(e));
-client.on("warn", (e) => console.warn(e));
-client.on("debug", (e) => console.info(e));
+client.on('error', (e) => console.error(e));
+client.on('warn', (e) => console.warn(e));
+// client.on('debug', (e) => console.info(e));
 
-client.steamIds = steamIds; // todo per guild??
-client.badWords = badWords; // todo per guild??
-client.automessageGuilds = new Map(); // todo per channel per guild and time settings?
-client.messageHooks = new Array(); // todo per guild??
-client.messageCreateHooks = new Map(); // TODO PER GUILD!
-client.registeredButtons = new Map(); // TODO PER GUILD!
-client.audioPlayers = new Map(); // per guild
+client.guildResources = new Map();
+client.getOrCreateGuildResources = function (guildId) {
+    if (client.guildResources.has(guildId)) {
+        return client.guildResources.get(guildId);
+    } else {
+        const resources = {
+            messageCreateHooks: new Map(),
+            registeredButtons: new Map(),
+            audioPlayer: undefined,
+        };
+        client.guildResources.set(guildId, resources);
+        return resources;
+    }
+};
 
 client.getGuildAudioPlayer = function (guildId) {
-    if (client.audioPlayers.has(guildId)) {
-        return client.audioPlayers.get(guildId);
-    } else {
-        const player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Pause, } });
-        //player.on(AudioPlayerStatus.Idle, () => { console.log('AudioPlayerStatus.Idle'); });
-        player.on('error', error => {
+    const resources = client.getOrCreateGuildResources(guildId);
+    if (!resources.audioPlayer) {
+        resources.audioPlayer = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Pause } });
+        // resources.audioPlayer.on(AudioPlayerStatus.Idle, () => { console.log('AudioPlayerStatus.Idle'); });
+        resources.audioPlayer.on('error', error => {
             console.error(`Error: ${error.message} with resource ${error.resource.metadata} on ${guildId}.`);
-            client.audioPlayers.delete(guildId);
+            resources.audioPlayer = undefined;
         });
-        client.audioPlayers.set(guildId, player);
-        return player;
     }
-}
+    return resources.audioPlayer;
+};
 
 const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
@@ -78,6 +82,7 @@ for (const file of commandFiles) {
     client.commands.set(command.data.name, command);
 }
 
+client.messageHooks = new Array();
 const messageHooksPath = path.join(__dirname, 'message_hooks');
 const messageHookFiles = fs.readdirSync(messageHooksPath).filter(file => file.endsWith('.js'));
 
@@ -86,6 +91,5 @@ for (const file of messageHookFiles) {
     const messageHook = require(filePath);
     client.messageHooks.push(messageHook);
 }
-
 
 client.login(process.env.TOKEN);

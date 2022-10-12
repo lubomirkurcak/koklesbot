@@ -37,9 +37,9 @@ module.exports = {
 
         await interaction.reply({ content: `Bag contains:\n${listContents()}\nHow many do you want to draw?`, components: [row] });
 
-        interaction.client.registeredButtons.set('draw1', interaction => interaction.update({ content: drawBalls(1), components: [] }));
-        interaction.client.registeredButtons.set('draw2', interaction => interaction.update({ content: drawBalls(2), components: [] }));
-        interaction.client.registeredButtons.set('draw3', interaction => interaction.update({ content: drawBalls(3), components: [] }));
-        interaction.client.registeredButtons.set('draw4', interaction => interaction.update({ content: drawBalls(4), components: [] }));
+        interaction.client.registeredButtons.set('draw1', click => click.update({ content: drawBalls(1), components: [] }));
+        interaction.client.registeredButtons.set('draw2', click => click.update({ content: drawBalls(2), components: [] }));
+        interaction.client.registeredButtons.set('draw3', click => click.update({ content: drawBalls(3), components: [] }));
+        interaction.client.registeredButtons.set('draw4', click => click.update({ content: drawBalls(4), components: [] }));
     },
-}
+};

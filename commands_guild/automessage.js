@@ -1,4 +1,4 @@
-const jsdom = require("jsdom");
+const jsdom = require('jsdom');
 const { SlashCommandBuilder } = require('discord.js');
 const wait = require('node:timers/promises').setTimeout;
 
@@ -7,7 +7,7 @@ async function getNecyklopediaFact() {
     const response = await fetch(url);
     const obj = await response.text();
     const dom = new jsdom.JSDOM(obj);
-    const matches = [...dom.window.document.querySelectorAll("ol li")]
+    const matches = [...dom.window.document.querySelectorAll('ol li')]
         .map(match => match.textContent)
         .filter(match => match.includes('Vedeli ste, že'));
 
@@ -28,8 +28,8 @@ module.exports = {
         .setDescription('Manage automated messages.')
         .addIntegerOption(option => option
             .setName('interval')
-            .setDescription('Time interval in minutes to wait between each message'))
-    ,
+            .setDescription('Time interval in minutes to wait between each message')),
+
     async execute(interaction) {
         const runToken = new Date();
         const timeInterval = clampOrDefault(interaction.options.getInteger('interval'), 1, 43200, 1440);

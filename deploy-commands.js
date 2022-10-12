@@ -1,4 +1,4 @@
-require('dotenv').config()
+require('dotenv').config();
 const fs = require('node:fs');
 const path = require('node:path');
 const { REST } = require('@discordjs/rest');
@@ -12,7 +12,7 @@ const disabledCommands = [
     'cs.js',
     'draw.js',
     'automessage.js',
-]
+];
 
 const commands = [];
 const commandsPath = path.join(__dirname, 'commands');
@@ -78,5 +78,5 @@ if (process.argv.includes('--deleteAll')) {
     const index = process.argv.indexOf('--delete');
     deleteCommand(process.argv[index + 1]);
 } else {
-    console.log(`  Usage: deploy-commands.js {--registerAll | --deleteAll | --delete <commandId>}`);
+    console.log('  Usage: deploy-commands.js {--registerAll | --deleteAll | --delete <commandId>}');
 }
