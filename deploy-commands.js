@@ -26,21 +26,37 @@ for (const file of commandFiles) {
     commands.push(command.data.toJSON());
 }
 
+const guildCommands = [];
+const guildCommandsPath = path.join(__dirname, 'commands_guild');
+const guildCommandFiles = fs.readdirSync(guildCommandsPath)
+    .filter(file => !disabledCommands.includes(file))
+    .filter(file => file.endsWith('.js'));
+
+for (const file of guildCommandFiles) {
+    const filePath = path.join(guildCommandsPath, file);
+    const command = require(filePath);
+    guildCommands.push(command.data.toJSON());
+}
+
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
 
 function registerCommands() {
-    rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: commands })
+    rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: guildCommands })
+        .then(data => console.log(`Successfully registered ${data.length} guild commands.`))
+        .catch(console.error);
+
+    rest.put(Routes.applicationCommands(clientId), { body: commands })
         .then(data => console.log(`Successfully registered ${data.length} application commands.`))
         .catch(console.error);
 }
 
-function deleteCommand(name) {
-    rest.delete(Routes.applicationGuildCommand(clientId, guildId, name))
-        .then(() => console.log(`Deleted guild command: '${name}'.`))
+function deleteCommand(commandId) {
+    rest.delete(Routes.applicationGuildCommand(clientId, guildId, commandId))
+        .then(() => console.log(`Deleted guild command: '${commandId}'.`))
         .catch(console.error);
 
-    rest.delete(Routes.applicationCommand(clientId, name))
-        .then(() => console.log(`Deleted application command: '${name}'.`))
+    rest.delete(Routes.applicationCommand(clientId, commandId))
+        .then(() => console.log(`Deleted application command: '${commandId}'.`))
         .catch(console.error);
 }
 
@@ -54,14 +70,13 @@ function deleteAllCommands() {
         .catch(console.error);
 }
 
-
-//deleteCommand('1028355321736986694');
-//deleteCommand('1028363644225982485');
-
-if (process.argv.includes('delete')) {
+if (process.argv.includes('--deleteAll')) {
     deleteAllCommands();
-} else if (process.argv.includes('register')) {
+} else if (process.argv.includes('--registerAll')) {
     registerCommands();
+} else if (process.argv.includes('--delete')) {
+    const index = process.argv.indexOf('--delete');
+    deleteCommand(process.argv[index + 1]);
 } else {
-    console.log(`  Usage: deploy-commands.js {register|delete}`);
+    console.log(`  Usage: deploy-commands.js {--registerAll | --deleteAll | --delete <commandId>}`);
 }
