@@ -4,24 +4,20 @@
 To add this bot to your server [click this!](https://discord.com/oauth2/authorize?client_id=1028334262656700506&scope=bot&permissions=1099511627775)
 
 ## Commands
+![List of bot commands.](commands.png "Commands")
+
+<!---
 | Command | Description |
 | --- | --- |
-| `/automessage` | Show informative messages |
+| `/guess` | Show informative messages |
 | `/cs` | Display Counter-Strike stats |
 | `/move` | Move all users to channel |
 | `/radim` | Draw balls from a bag |
 | `/rename` | Change a member's nickname |
+--->
 
-## Features
-### Language police!
-Help your members to communicate properly by automated friendly reminders. 😊
+## Message hooks
+React to messages, detect keywords.
 
-## Roadmap
-### Rankings
-Display member rank standings in popular games.
-
-### Polling
-Organize democratic elections!
-
-### Snooping
-Display a random photo of an instagram account's page!
+## Soundboard
+Play sounds to any channel.

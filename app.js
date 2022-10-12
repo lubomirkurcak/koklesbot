@@ -3,6 +3,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const { steamIds, badWords } = require(process.env.CONFIG);
+const { generateDependencyReport, createAudioPlayer, NoSubscriberBehavior, AudioPlayerStatus } = require('@discordjs/voice');
+console.log(generateDependencyReport());
 
 const client = new Client({
     intents: [
@@ -30,10 +32,28 @@ client.on("error", (e) => console.error(e));
 client.on("warn", (e) => console.warn(e));
 client.on("debug", (e) => console.info(e));
 
-client.steamIds = steamIds;
-client.badWords = badWords;
-client.automessageGuilds = new Map();
-client.messageCreateHooks = new Map();
+client.steamIds = steamIds; // todo per guild??
+client.badWords = badWords; // todo per guild??
+client.automessageGuilds = new Map(); // todo per channel per guild and time settings?
+client.messageHooks = new Array(); // todo per guild??
+client.messageCreateHooks = new Map(); // TODO PER GUILD!
+client.registeredButtons = new Map(); // TODO PER GUILD!
+client.audioPlayers = new Map(); // per guild
+
+client.getGuildAudioPlayer = function (guildId) {
+    if (client.audioPlayers.has(guildId)) {
+        return client.audioPlayers.get(guildId);
+    } else {
+        const player = createAudioPlayer({ behaviors: { noSubscriber: NoSubscriberBehavior.Pause, } });
+        //player.on(AudioPlayerStatus.Idle, () => { console.log('AudioPlayerStatus.Idle'); });
+        player.on('error', error => {
+            console.error(`Error: ${error.message} with resource ${error.resource.metadata} on ${guildId}.`);
+            client.audioPlayers.delete(guildId);
+        });
+        client.audioPlayers.set(guildId, player);
+        return player;
+    }
+}
 
 const eventsPath = path.join(__dirname, 'events');
 const eventFiles = fs.readdirSync(eventsPath).filter(file => file.endsWith('.js'));
@@ -57,5 +77,15 @@ for (const file of commandFiles) {
     const command = require(filePath);
     client.commands.set(command.data.name, command);
 }
+
+const messageHooksPath = path.join(__dirname, 'message_hooks');
+const messageHookFiles = fs.readdirSync(messageHooksPath).filter(file => file.endsWith('.js'));
+
+for (const file of messageHookFiles) {
+    const filePath = path.join(messageHooksPath, file);
+    const messageHook = require(filePath);
+    client.messageHooks.push(messageHook);
+}
+
 
 client.login(process.env.TOKEN);

@@ -45,6 +45,7 @@ module.exports = {
             .replaceAll('7', 't')
             .replaceAll('8', 'b')
             .replaceAll('w', 'v')
+            .replaceAll('j', 'i')
             .replaceAll('y', 'i');
     },
 
@@ -52,7 +53,7 @@ module.exports = {
         return string.replace(/[^\x00-\x7F]/g, '');
     },
 
-    onlyKeepAlphabetic: function (string) {
-        return string.replace(/^[a-zA-Z]$/g, '');
+    onlyKeepAsciiAlphabetic: function (string) {
+        return string.replace(/[^a-zA-Z]/g, '');
     },
 }

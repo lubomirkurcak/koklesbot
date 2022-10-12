@@ -6,10 +6,18 @@ const { Routes } = require('discord.js');
 const clientId = process.env.CLIENT_ID;
 const guildId = process.env.GUILD_ID;
 
+const disabledCommands = [
+    'rank.js',
+    'ping.js',
+    'cs.js',
+    'draw.js',
+    'automessage.js',
+]
+
 const commands = [];
 const commandsPath = path.join(__dirname, 'commands');
 const commandFiles = fs.readdirSync(commandsPath)
-    .filter(file => !(file === 'rank.js' || file === 'ping.js' || file === 'cs.js'))
+    .filter(file => !disabledCommands.includes(file))
     .filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
@@ -46,7 +54,14 @@ function deleteAllCommands() {
         .catch(console.error);
 }
 
+
 //deleteCommand('1028355321736986694');
 //deleteCommand('1028363644225982485');
-//deleteAllCommands();
-registerCommands();
+
+if (process.argv.includes('delete')) {
+    deleteAllCommands();
+} else if (process.argv.includes('register')) {
+    registerCommands();
+} else {
+    console.log(`  Usage: deploy-commands.js {register|delete}`);
+}
