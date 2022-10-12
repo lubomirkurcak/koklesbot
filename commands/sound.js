@@ -68,7 +68,11 @@ module.exports = {
                             entersState(connection, VoiceConnectionStatus.Connecting, 5_000),
                         ]);
                     } catch (error) {
-                        connection.destroy();
+                        try {
+                            connection.destroy();
+                        } catch (error) {
+                            console.log(error);
+                        }
                     }
                 });
 

@@ -13,7 +13,7 @@ async function getRandomCountry() {
     let code;
     do {
         code = getRandomElement(codes).cca2;
-    } while (code === 'um');
+    } while (code.toLowerCase() === 'um');
     const countriesUrl = `https://restcountries.com/${apiVersion}/alpha/${code}`;
     const country = (await (await fetch(countriesUrl)).json())[0];
 
