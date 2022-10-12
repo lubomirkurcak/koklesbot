@@ -28,7 +28,6 @@ module.exports = {
                 Promise.allSettled(interaction.member.voice.channel.members.map(member => member.voice.setChannel(targetChannel)));
             }
 
-            //await interaction.reply({ content: ':heavy_check_mark:', ephemeral: true });
             await interaction.reply(':heavy_check_mark:');
             return interaction.deleteReply();
         } catch (error) {

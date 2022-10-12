@@ -15,7 +15,6 @@ module.exports = {
                 { name: 'banned', value: 'banned.ogg' },
                 { name: 'bruh', value: 'bruh.ogg' },
                 { name: 'dog', value: 'dog.ogg' },
-                //{ name: 'earrape', value: 'earrape.ogg' },
                 { name: 'emotionaldamage', value: 'emotionaldamage.ogg' },
                 { name: 'english', value: 'english.ogg' },
                 { name: 'error', value: 'error.ogg' },

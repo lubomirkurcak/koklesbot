@@ -5,12 +5,7 @@ module.exports = {
     execute(message) {
         const emojiVariant = false;
 
-        if (message.content.includes('cs')
-            && (
-                message.content.includes('radim') ||
-                message.content.includes('reto') ||
-                message.content.includes('retko')
-            )) {
+        if (message.content.includes('cs') && message.content.includes('radim')) {
             const row = new ActionRowBuilder()
                 .addComponents(
                     new ButtonBuilder().setCustomId('cube').setLabel('🎲').setStyle(ButtonStyle.Primary),
@@ -21,7 +16,7 @@ module.exports = {
 
             message.client.registeredButtons.set('cube', interaction => {
                 const id = '235839231014993921';
-                if (interaction.user.id === id) {// || interaction.user.id === '179973930956619776') {
+                if (interaction.user.id === id) {
                     if (emojiVariant) {
                         const roll = getRandomElement([':one:', ':two:', ':three:', ':four:', ':five:', ':six:']);
                         interaction.update({ content: baseMessage + '\n' + roll, components: [] });
