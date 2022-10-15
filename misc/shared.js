@@ -3,6 +3,13 @@ module.exports = {
         return [...new Set(array)];
     },
 
+    uniqueAndCounts: function (array, counts = {}) {
+        array.forEach(element => {
+            counts[element] = 1 + (counts[element] ?? 0);
+        });
+        return counts;
+    },
+
     getRandomElement: function (array) {
         const index = Math.floor(array.length * Math.random());
         return array[index];

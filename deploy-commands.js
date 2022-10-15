@@ -12,6 +12,10 @@ const disabledCommands = [
     'cs.js',
     'draw.js',
     'automessage.js',
+    'radio.js',
+    'coins.js',
+    'beg.js',
+    'search.js',
 ];
 
 const commands = [];
@@ -21,6 +25,7 @@ const commandFiles = fs.readdirSync(commandsPath)
     .filter(file => file.endsWith('.js'));
 
 for (const file of commandFiles) {
+    console.log(file);
     const filePath = path.join(commandsPath, file);
     const command = require(filePath);
     commands.push(command.data.toJSON());
@@ -33,6 +38,7 @@ const guildCommandFiles = fs.readdirSync(guildCommandsPath)
     .filter(file => file.endsWith('.js'));
 
 for (const file of guildCommandFiles) {
+    console.log(file);
     const filePath = path.join(guildCommandsPath, file);
     const command = require(filePath);
     guildCommands.push(command.data.toJSON());

@@ -3,7 +3,9 @@ const { getRandomElement } = require('../misc/shared');
 
 module.exports = {
     execute(message) {
-        if (message.content.includes('cs') && message.content.includes('radim')) {
+        const id = '235839231014993921';
+        if (message.content.includes('cs') &&
+            (message.content.includes('radim') || message.content.includes(id))) {
             const row = new ActionRowBuilder().addComponents(
                 new ButtonBuilder().setCustomId('cube').setLabel('🎲').setStyle(ButtonStyle.Primary),
             );
@@ -14,7 +16,6 @@ module.exports = {
             const guildResources = message.client.getOrCreateGuildResources(message.guildId);
 
             guildResources.registeredButtons.set('cube', interaction => {
-                const id = '235839231014993921';
                 if (interaction.user.id === id) {
                     const roll = getRandomElement(['1', '2', '3', '4', '5', '6']);
                     const rolledButton = new ActionRowBuilder().addComponents(

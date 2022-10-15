@@ -10,47 +10,32 @@ module.exports = {
         .addStringOption(option => option.setName('sound')
             .setDescription('The sound to play.')
             .setRequired(true)
-            .addChoices(
-                { name: 'amongus', value: 'amongus.ogg' },
-                { name: 'banned', value: 'banned.ogg' },
-                { name: 'bruh', value: 'bruh.ogg' },
-                { name: 'dog', value: 'dog.ogg' },
-                { name: 'emotionaldamage', value: 'emotionaldamage.ogg' },
-                { name: 'english', value: 'english.ogg' },
-                { name: 'error', value: 'error.ogg' },
-                { name: 'flute', value: 'flute.ogg' },
-                { name: 'jam', value: 'jam.webm' },
-                { name: 'jebaited', value: 'jebaited.ogg' },
-                { name: 'minecraft', value: 'minecraft.ogg' },
-                { name: 'okay', value: 'okay.ogg' },
-                { name: 'oof', value: 'oof.ogg' },
-                { name: 'risitas', value: 'risitas.ogg' },
-                { name: 'running', value: 'running.ogg' },
-                { name: 'sad', value: 'sad.ogg' },
-                { name: 'shutup', value: 'shutup.ogg' },
-                { name: 'sofunny', value: 'sofunny.ogg' },
-                { name: 'to-be-continued', value: 'to-be-continued.ogg' },
-                { name: 'triangle', value: 'triangle.webm' },
-                { name: 'trumpet', value: 'trumpet.ogg' },
-                { name: 'ty-kokot', value: 'ty-kokot.ogg' },
-                { name: 'vpici', value: 'vpici.ogg' },
-                { name: 'wideputin', value: 'wideputin.ogg' },
-                { name: 'wow', value: 'wow.ogg' },
-            ),
+            .setAutocomplete(true),
         )
         .addChannelOption(option => option
             .setName('channel')
             .setDescription('The channel to play the sound in.')
             .addChannelTypes(ChannelType.GuildVoice)),
 
+    async autocomplete(interaction) {
+        const options = await interaction.client.db.getUserSounds(interaction.member.id);
+        return interaction.respond(options).catch(console.error);
+    },
+
     async execute(interaction) {
         try {
+            const sound = interaction.options.getString('sound');
+            const hasSound = sound === 'oof' || await interaction.client.db.userHasSound(interaction.member.id, sound);
+            if (!hasSound) {
+                return interaction.reply({ content: 'You don\'t own that sound. :cry:', ephemeral: true })
+            }
+
             const channel = interaction.options.getChannel('channel') ?? interaction.member.voice.channel;
             if (!channel) {
                 return interaction.reply({ content: 'Join a voice channel or specify target channel to play a sound! :musical_note:', ephemeral: true });
             }
-            const audioPlayer = interaction.client.getGuildAudioPlayer(interaction.guildId);
 
+            const audioPlayer = interaction.client.getGuildAudioPlayer(interaction.guildId);
             let connection = getVoiceConnection(channel.guildId);
             if (connection && connection.joinConfig.channelId == channel.id) {
                 // reuse
@@ -71,20 +56,20 @@ module.exports = {
                         try {
                             connection.destroy();
                         } catch (error2) {
-                            console.log(error2);
+                            (error2);
                         }
                     }
                 });
-
-                connection.subscribe(audioPlayer);
             }
 
-            const sound = interaction.options.getString('sound');
-            const inputType = sound.endsWith('.ogg') ? StreamType.OggOpus : sound.endsWith('.webm') ? StreamType.WebmOpus : undefined;
-            const resource = createAudioResource(createReadStream(join(__dirname, `../assets/${sound}`)), inputType);
+            connection.subscribe(audioPlayer);
+
+            //const inputType = sound.endsWith('.ogg') ? StreamType.OggOpus : sound.endsWith('.webm') ? StreamType.WebmOpus : undefined;
+            const inputType = StreamType.OggOpus;
+            const resource = createAudioResource(createReadStream(join(__dirname, `../assets/sounds/${sound}.ogg`)), inputType);
             audioPlayer.play(resource);
 
-            return interaction.reply({ content: `:sound: ${sound}`, ephemeral: true });
+            return interaction.reply({ content: `:sound: ${sound}`, ephemeral: false });
         } catch (error) {
             console.error(error);
             return interaction.reply({ content: 'Command failed. :cry:', ephemeral: true });

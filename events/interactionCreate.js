@@ -14,6 +14,10 @@ module.exports = {
             } else {
                 console.warn(`Recieved unknown button interaction. customId: ${interaction.customId}`);
             }
+        } else if (interaction.isAutocomplete()) {
+            const command = interaction.client.commands.get(interaction.commandName);
+            if (!command) return;
+            command.autocomplete(interaction);
         } else {
             console.warn(`Unknown interaction: ${interaction}`);
         }

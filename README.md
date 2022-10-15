@@ -1,7 +1,7 @@
 # koklesbot
 ## The greatest discord bot you'll ever need!
 
-To add this bot to your server [click this!](https://discord.com/oauth2/authorize?client_id=1028334262656700506&scope=bot&permissions=1099511627775)
+To add this bot to your server [click here!](https://discord.com/oauth2/authorize?client_id=1028334262656700506&scope=bot&permissions=1099511627775)
 
 ## Commands
 ![List of bot commands.](commands.png "Commands")

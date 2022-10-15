@@ -15,7 +15,8 @@ function hasCurseWords(message) {
 module.exports = {
     execute(message) {
         if (hasCurseWords(message.content)) {
-            message.reply('We don\'t use curse words here! :slight_smile:');
+            message.react('🐷');
+            // message.reply('We don\'t use curse words here! :slight_smile:');
         }
     },
 };
