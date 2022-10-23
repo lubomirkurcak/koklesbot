@@ -12,9 +12,9 @@ const disabledCommands = [
     'cs.js',
     'draw.js',
     'automessage.js',
-    'radio.js',
-    'coins.js',
-    'beg.js',
+    // 'radio.js',
+    // 'coins.js',
+    // 'beg.js',
     'search.js',
 ];
 
@@ -24,8 +24,9 @@ const commandFiles = fs.readdirSync(commandsPath)
     .filter(file => !disabledCommands.includes(file))
     .filter(file => file.endsWith('.js'));
 
+console.log('Application commands:');
 for (const file of commandFiles) {
-    console.log(file);
+    console.log(`  ${file}`);
     const filePath = path.join(commandsPath, file);
     const command = require(filePath);
     commands.push(command.data.toJSON());
@@ -37,14 +38,31 @@ const guildCommandFiles = fs.readdirSync(guildCommandsPath)
     .filter(file => !disabledCommands.includes(file))
     .filter(file => file.endsWith('.js'));
 
+console.log('Guild commands:');
 for (const file of guildCommandFiles) {
-    console.log(file);
+    console.log(`  ${file}`);
     const filePath = path.join(guildCommandsPath, file);
     const command = require(filePath);
     guildCommands.push(command.data.toJSON());
 }
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
+
+function registerCommand(file) {
+    let filePath = path.join(commandsPath, file);
+    if (fs.existsSync(filePath)) {
+        const command = require(filePath);
+        rest.put(Routes.applicationCommand(clientId), { body: command.data.toJSON() })
+    } else {
+        filePath = path.join(guildCommandsPath, file);
+        if (fs.existsSync(filePath)) {
+            const command = require(filePath);
+            rest.put(Routes.applicationGuildCommand(clientId, guildId), { body: command.data.toJSON() });
+        } else {
+            console.error(`File ${file} not found.`);
+        }
+    }
+}
 
 function registerCommands() {
     rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: guildCommands })
@@ -83,6 +101,10 @@ if (process.argv.includes('--deleteAll')) {
 } else if (process.argv.includes('--delete')) {
     const index = process.argv.indexOf('--delete');
     deleteCommand(process.argv[index + 1]);
+    // } else if (process.argv.includes('--register')) {
+    // const index = process.argv.indexOf('--register');
+    // registerCommand(process.argv[index + 1]);
 } else {
+    // console.log('  Usage: deploy-commands.js {--registerAll | --deleteAll | --register <filename> | --delete <commandId>}');
     console.log('  Usage: deploy-commands.js {--registerAll | --deleteAll | --delete <commandId>}');
 }

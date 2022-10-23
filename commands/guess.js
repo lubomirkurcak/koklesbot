@@ -30,7 +30,7 @@ module.exports = {
         .addStringOption(option => option.setName('action')
             .setDescription('The sound to play.')
             .addChoices(
-                { name: 'play', value: 'play' },
+                { name: 'flag', value: 'flag' },
                 { name: 'rankings', value: 'rankings' },
             ),
         ),
@@ -38,21 +38,10 @@ module.exports = {
     async execute(interaction) {
         const action = interaction.options.getString('action');
         if (action === 'rankings') {
-            const flagWins = await interaction.client.db.getAllUserFlagWins();
-            const array = [];
-            for (const elem in flagWins) {
-                array.push([`<@${elem}>`, flagWins[elem]]);
-            }
-            const sorted = array.sort((a, b) => b[1] - a[1]);
-            //sorted.length = Math.min(sorted.length, 5);
-
-            const names = { name: 'User', value: sorted.map(([a, _b]) => a).join('\n'), inline: true };
-            const wins = { name: 'Wins', value: sorted.map(([_a, b]) => b).join('\n'), inline: true };
+            const [names, wins] = await interaction.client.db.getTopUserFlagWins(6, interaction.member.id);
             const embed = new EmbedBuilder()
                 .setTitle(':trophy: Most countries guessed! :trophy:')
                 .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
-                // .setColor(0x990000)
-                // .setThumbnail()
                 .addFields(names)
                 .addFields(wins)
                 .setTimestamp()
