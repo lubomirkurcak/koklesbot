@@ -28,15 +28,22 @@ function americanize(hour) {
     }
 }
 
+function clockEmoji(hour) {
+    const emoji = ['🕛', '🕐', '🕑', '🕒', '🕓', '🕔', '🕕', '🕖', '🕗', '🕘', '🕙', '🕚'];
+    return emoji[hour % 12];
+}
+
 function getTimeOptions() {
-    return [...Array(24).keys()].map((_, i) => { return { name: `${i}:00  (${americanize(i)})`, value: i } });
+    return [...Array(24).keys()].map((_, i) => { return { name: `${clockEmoji(i)} ${i}:00  (${americanize(i)})`, value: i } });
 }
 
 function getEventOptions() {
     return [
         { name: 'All', value: 'all' },
         { name: 'Necyklopedia Fakty (🇸🇰/🇨🇿)', value: 'necyklopedia' },
-        { name: 'Counterstrike Stats', value: 'cs-stats' },
+        { name: 'CS:GO 🎮⏱️', value: 'csgo-playtime' },
+        { name: 'Rocket League 🎮⏱️', value: 'rl-playtime' },
+        { name: 'Forza Horizon 5 🎮⏱️', value: 'fh5-playtime' },
         // { name: 'Piggy Leaderboards', value: 'piggy' },
     ];
 }
@@ -193,7 +200,7 @@ module.exports = {
             const event = interaction.options.getString('event');
             const state = subcommand === 'enable';
 
-            if (event === 'all') {
+            if (!event || event === 'all') {
                 getEventOptions()
                     .map(value => value.value)
                     .filter(value => value !== 'all')

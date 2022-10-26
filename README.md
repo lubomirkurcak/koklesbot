@@ -61,6 +61,7 @@ Play sounds!
 ### Integrated APIs
 * [Rest Countries](https://gitlab.com/amatos/rest-countries)
 * [Steam Web API](https://steamcommunity.com/dev)
+* [LoL Esports API](https://lolesports.com/)
 
 ## Tech
 Cloud database, docker image, app sharding.
