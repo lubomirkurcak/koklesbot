@@ -12,10 +12,10 @@ module.exports = {
             const member = interaction.options.getMember('member');
             const name = interaction.options.getString('name');
             await member.setNickname(name);
-            return interaction.reply({ content: `You renamed ${member.user.username}`, ephemeral: true });
+            return interaction.reply({ content: `You renamed ${member.displayName}`, ephemeral: true });
         } catch (error) {
             console.error(error);
-            return interaction.reply({ content: 'Rename failed. :x: I likely don\'t have sufficient permissions to do that. :cry:', ephemeral: true });
+            return interaction.reply({ content: 'Rename failed, likely due to insufficient permissions.', ephemeral: true });
         }
     },
 };

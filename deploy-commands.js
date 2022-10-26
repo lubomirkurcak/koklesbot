@@ -13,9 +13,10 @@ const disabledCommands = [
     'draw.js',
     'automessage.js',
     // 'radio.js',
-    // 'coins.js',
-    // 'beg.js',
+    'coins.js',
+    'beg.js',
     'search.js',
+    'predictions.js',
 ];
 
 const commands = [];
@@ -47,22 +48,6 @@ for (const file of guildCommandFiles) {
 }
 
 const rest = new REST({ version: '10' }).setToken(process.env.TOKEN);
-
-function registerCommand(file) {
-    let filePath = path.join(commandsPath, file);
-    if (fs.existsSync(filePath)) {
-        const command = require(filePath);
-        rest.put(Routes.applicationCommand(clientId), { body: command.data.toJSON() })
-    } else {
-        filePath = path.join(guildCommandsPath, file);
-        if (fs.existsSync(filePath)) {
-            const command = require(filePath);
-            rest.put(Routes.applicationGuildCommand(clientId, guildId), { body: command.data.toJSON() });
-        } else {
-            console.error(`File ${file} not found.`);
-        }
-    }
-}
 
 function registerCommands() {
     rest.put(Routes.applicationGuildCommands(clientId, guildId), { body: guildCommands })

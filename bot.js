@@ -3,10 +3,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 const { Client, Collection, GatewayIntentBits } = require('discord.js');
 const { generateDependencyReport, createAudioPlayer, NoSubscriberBehavior, AudioPlayerStatus, createAudioResource } = require('@discordjs/voice');
-const { getRandomElement } = require('./misc/shared');
+const { getRandomElement, dailyRepeatedEvent, millisecondsUntilRepeatedEvent } = require('./misc/shared');
 const { join } = require('node:path');
 const { initDatabase } = require('./db.js');
-console.log(generateDependencyReport());
+// console.log(generateDependencyReport());
 const wait = require('node:timers/promises').setTimeout;
 
 const client = new Client({
@@ -46,8 +46,11 @@ client.getOrCreateGuildResources = function (guildId) {
         const resources = {
             messageCreateHooks: new Map(),
             registeredButtons: new Map(),
+            registeredModals: new Map(),
+            scheduledJobs: new Map(),
         };
         client.guildResources.set(guildId, resources);
+
         return resources;
     }
 };
@@ -56,17 +59,23 @@ function radioPlayNextSong(player, radio) {
     const radioPath = path.join(__dirname, `assets/${radio}`);
     const radioFiles = fs.readdirSync(radioPath);
     const lastSongs = client.lastRadioSongs.get(radio);
+    let ok = false;
     let sound;
     for (let maxTries = 10; maxTries > 0; maxTries -= 1) {
         sound = getRandomElement(radioFiles);
         if (!lastSongs.includes(sound)) {
+            ok = true;
             break;
         }
-        console.log(`${radio} retrying new song pick :) ${maxTries} tries left :)`)
     }
-    lastSongs.push(sound);
-    if (lastSongs.length > 20) {
-        lastSongs.shift();
+    if (ok) {
+        lastSongs.push(sound);
+        if (lastSongs.length > 20) {
+            lastSongs.shift();
+        }
+    } else {
+        sound = lastSongs.shift();
+        lastSongs.push(sound);
     }
 
     const resource = createAudioResource(fs.createReadStream(join(__dirname, `assets/${radio}/${sound}`)));
@@ -143,4 +152,3 @@ for (const file of messageHookFiles) {
 }
 
 client.login(process.env.TOKEN);
-

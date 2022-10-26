@@ -1,4 +1,4 @@
-const { joinVoiceChannel, VoiceConnectionStatus, entersState, createAudioResource, getVoiceConnection, StreamType, getVoiceConnections, AudioPlayerStatus, createAudioPlayer, NoSubscriberBehavior } = require('@discordjs/voice');
+const { joinVoiceChannel, VoiceConnectionStatus, entersState, createAudioResource, getVoiceConnection, StreamType, AudioPlayerStatus, createAudioPlayer } = require('@discordjs/voice');
 const { SlashCommandBuilder, ChannelType } = require('discord.js');
 const { createReadStream } = require('node:fs');
 const { join } = require('node:path');

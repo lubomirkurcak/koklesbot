@@ -16,7 +16,7 @@ module.exports = {
     execute(message) {
         if (hasCurseWords(message.content)) {
             message.react('🐷');
-            // message.reply('We don\'t use curse words here! :slight_smile:');
+            message.client.db.awardGlobalDiscipline('curses', message.author.id, 1);
         }
     },
 };

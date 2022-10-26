@@ -1,8 +1,8 @@
-const { getRandomElement, recursiveCollectLeafValues, unique, simplifyString, collapseDuplicateCharacters } = require('../misc/shared.js');
+const { getRandomElement, recursiveCollectLeafValues, unique, simplifyString, collapseDuplicateCharacters, removeSpecialCharacters } = require('../misc/shared');
 const { SlashCommandBuilder, EmbedBuilder } = require('discord.js');
 
 function simplifyCountryName(value) {
-    return collapseDuplicateCharacters(simplifyString(value));
+    return collapseDuplicateCharacters(simplifyString(removeSpecialCharacters(value)));
 }
 
 async function getRandomCountry() {
@@ -40,12 +40,12 @@ module.exports = {
         if (action === 'rankings') {
             const [names, wins] = await interaction.client.db.getTopUserFlagWins(6, interaction.member.id);
             const embed = new EmbedBuilder()
-                .setTitle(':trophy: Most countries guessed! :trophy:')
+                .setTitle(':trophy: Most correct guesses! :trophy:')
                 .setURL('https://www.youtube.com/watch?v=dQw4w9WgXcQ')
                 .addFields(names)
                 .addFields(wins)
                 .setTimestamp()
-                .setFooter({ text: 'kokles inc. ©️', iconURL: 'https://cdn.discordapp.com/avatars/1028334262656700506/82a584fbe99ad2a23bf53b7dd9d933ae' });
+                .setFooter({ text: '©️ kokles Inc.', iconURL: process.env.BOT_ICON_URL });
 
             return interaction.reply({ embeds: [embed] });
         } else {
@@ -55,7 +55,7 @@ module.exports = {
                         .setTitle(`${result.emoji} Guess the country! ${result.emoji}`)
                         .setDescription('Guess the name of the country before others!')
                         .setTimestamp()
-                        .setFooter({ text: 'kokles industries ©️ all rights reserved️', iconURL: 'https://cdn.discordapp.com/avatars/1028334262656700506/82a584fbe99ad2a23bf53b7dd9d933ae' })
+                        .setFooter({ text: '©️ kokles industries️', iconURL: process.env.BOT_ICON_URL })
                         .setImage(result.flag);
 
                     interaction.reply({ embeds: [embed] });

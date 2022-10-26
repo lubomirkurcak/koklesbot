@@ -4,8 +4,8 @@ const { getRandomElement } = require('../misc/shared');
 module.exports = {
     execute(message) {
         const id = '235839231014993921';
-        if (message.content.includes('cs') &&
-            (message.content.includes('radim') || message.content.includes(id))) {
+        const msg = message.content.toLowerCase();
+        if (msg.includes('cs') && (msg.includes('radim') || msg.includes(id))) {
             const row = new ActionRowBuilder().addComponents(
                 new ButtonBuilder().setCustomId('cube').setLabel('🎲').setStyle(ButtonStyle.Primary),
             );
